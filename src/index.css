@@ -1,0 +1,32 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons+Round');
+
+@theme {
+  /* On définit les couleurs officielles de Hostelia (III.6.2) */
+  --color-hostelia-dark: #0b1120;
+  --color-hostelia-gold: #d4af37;
+  --color-hostelia-card: #1a2235;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-hostelia-dark);
+    color: white;
+    margin: 0;
+  }
+}
+/* Forcer la reconnaissance des Symbols */
+.material-symbols-outlined, .material-symbols-rounded {
+  font-family: 'Material Symbols Outlined', 'Material Symbols Rounded', sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+}
