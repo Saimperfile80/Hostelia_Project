@@ -5,22 +5,27 @@ const SecurityAudit = () => {
   const [logs, setLogs] = useState([]);
   const [stats, setStats] = useState({ success: 0, fails: 0 });
 
-  useEffect(() => {
-    const fetchAudit = async () => {
-      try {
-        const res = await fetch('http://127.0.0.1:8000/api/audit/logs');
-        if (res.ok) {
-          const data = await res.json();
-          // On vérifie que data.logs existe bien avant de mettre à jour
-          setLogs(data.logs || []);
-          setStats(data.stats || { success: 0, fails: 0 });
-        }
-      } catch (err) {
-        console.error("Erreur de connexion à l'API Audit");
-      }
-    };
-    fetchAudit();
-  }, []);
+ useEffect(() => {
+  const fetchAuditData = async () => {
+    try {
+      // 1. Récupérer les logs
+      const resLogs = await fetch('http://127.0.0.1:8000/api/audit/logs');
+      const dataLogs = await resLogs.json();
+      setLogs(dataLogs || []); // Ici on passe directement dataLogs car c'est une liste
+
+      // 2. Récupérer les stats (il faut appeler la route stats)
+      const resStats = await fetch('http://127.0.0.1:8000/api/security/stats');
+      const dataStats = await resStats.json();
+      setStats({
+        success: dataStats.authorized_access || 0,
+        fails: dataStats.auth_failures || 0
+      });
+    } catch (err) {
+      console.error("Erreur de connexion à l'API Audit");
+    }
+  };
+  fetchAuditData();
+}, []);
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20">

@@ -85,11 +85,10 @@ const CheckInOut = () => {
         // 2. Update de la chambre
         const nextRoomStatus = type === 'in' ? 'Occupée' : 'À nettoyer';
         await fetch(`http://127.0.0.1:8000/api/rooms/update_status`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ room_number: roomNumber, status: nextRoomStatus })
-        });
-
+        method: 'PUT', // Ou POST selon ce que tu as mis dans main.py
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ room_number: roomNumber, status: nextRoomStatus })
+      });
         setShowActionModal(null);
         fetchMovementData();
         

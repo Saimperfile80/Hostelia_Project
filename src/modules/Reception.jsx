@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// Importations de tous les modules (fichiers que nous allons créer)
 import Dashboard from './reception/Dashboard';
 import Reservations from './reception/Reservations';
 import Inventory from './reception/Inventory';
@@ -9,18 +8,26 @@ import Demandes from './reception/Demandes';
 import Rapports from './reception/Rapports';
 import Tarifs from './reception/Tarifs';
 
+// AJOUT DES IMPORTS POUR ÉVITER LA PAGE VIDE
+import HistoriqueTransactions from './caissier/HistoriqueTransactions'; 
+import RapportsFinanciers from './caissier/RapportsFinanciers';
+
 const Reception = ({ onBack }) => {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
   const [activeMenu, setActiveMenu] = useState('dashboard');
   const [stats, setStats] = useState({ arrivals: 0, departures: 0, available: 0, dirty: 0 });
 
-  // Fonction de rendu dynamique pour basculer entre les fichiers
   const renderActiveModule = () => {
     switch (activeMenu) {
       case 'dashboard':    return <Dashboard stats={stats} />;
       case 'reservations': return <Reservations />;
       case 'chambres':     return <Inventory />;
       case 'checkin':      return <CheckInOut />;
-      case 'factures':     return <Facturation />;
+      case 'factures':     return <Facturation setMenu={setActiveMenu} />; 
+      
+      // CES CAS DOIVENT CORRESPONDRE AUX SETMENU DE FACTURATION
+      case 'historique-transactions': return <HistoriqueTransactions />; 
+      case 'rapports-financiers':    return <RapportsFinanciers />;    
+      
       case 'demandes':     return <Demandes />;
       case 'rapports':     return <Rapports />;
       case 'tarifs':       return <Tarifs />;
@@ -29,8 +36,8 @@ const Reception = ({ onBack }) => {
   };
 
   return (
-    <div className="flex h-screen w-full bg-hostelia-dark text-white overflow-hidden">
-      {/* Sidebar Interne Réception */}
+    <div className="flex h-screen w-full bg-[#0b1120] text-white overflow-hidden">
+      {/* Sidebar */}
       <nav className="w-80 bg-[#151c2c] border-r border-white/5 p-8 flex flex-col shadow-2xl">
         <div className="mb-10 flex items-center gap-4">
           <button 
@@ -60,7 +67,7 @@ const Reception = ({ onBack }) => {
               key={item.id}
               onClick={() => setActiveMenu(item.id)}
               className={`flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all text-sm ${
-                activeMenu === item.id 
+                activeMenu === item.id || (activeMenu === 'historique-transactions' && item.id === 'factures')
                 ? 'bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/30' 
                 : 'text-slate-400 hover:bg-white/5'
               }`}
@@ -70,32 +77,25 @@ const Reception = ({ onBack }) => {
             </li>
           ))}
         </ul>
-
-        <div className="mt-6 p-4 bg-blue-500/5 border border-blue-500/10 rounded-2xl">
-            <p className="text-[10px] font-bold text-blue-400 uppercase mb-1">Agent Connecté</p>
-            <p className="text-xs text-slate-400 truncate font-medium">Réceptionniste Principal</p>
-        </div>
       </nav>
 
-      {/* Zone de travail Dynamique */}
+      {/* Zone principale */}
       <main className="flex-1 p-12 overflow-y-auto bg-gradient-to-b from-[#0b1120] to-[#0f172a]">
         <header className="mb-10 flex justify-between items-end">
           <div>
             <h1 className="text-4xl font-black tracking-tighter uppercase text-white">
               {activeMenu === 'dashboard' ? 'Aperçu général' : 
-               activeMenu === 'chambres' ? 'Inventaire Chambres' :
-               activeMenu === 'checkin' ? 'Check-in / Out' :
+               activeMenu === 'historique-transactions' ? 'Historique Caisse' :
+               activeMenu === 'rapports-financiers' ? 'Rapports Financiers' :
                activeMenu.charAt(0).toUpperCase() + activeMenu.slice(1)}
             </h1>
-            <p className="text-slate-500 font-medium">Gestion et suivi des opérations de réception</p>
+            <p className="text-slate-500 font-medium">Gestion Electron Desktop Hostelia</p>
           </div>
           <div className="bg-[#151c2c] px-6 py-3 rounded-2xl border border-white/5 text-slate-300 text-sm font-bold shadow-xl">
-            <i className="far fa-calendar-alt mr-2 text-blue-400"></i>
-            {new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+            {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
           </div>
         </header>
 
-        {/* Affichage du module actif */}
         {renderActiveModule()}
       </main>
     </div>
